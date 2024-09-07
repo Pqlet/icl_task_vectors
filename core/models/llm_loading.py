@@ -12,6 +12,7 @@ from core.models.utils.llm_layers import get_layers, get_layers_path
 BASE_KWARGS = {
     "torch_dtype": torch.float16,
     "trust_remote_code": True,
+    #"offload_buffers":True,
 }
 
 GPU_KWARGS = {
@@ -79,6 +80,8 @@ def _create_device_map(model_path: str) -> dict[str, int]:
     base_device_map = infer_auto_device_map(model, max_memory=max_memory, no_split_module_classes=[layer_class])
 
     num_devices = torch.cuda.device_count()
+    if num_devices == 1:
+        num_devices = 2 # for handling division by 0
 
     layers_path = get_layers_path(model)
 

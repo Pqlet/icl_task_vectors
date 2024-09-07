@@ -65,7 +65,9 @@ class ForwardTracer:
             def hook(model, inp, out):
                 if isinstance(out, tuple):
                     out = out[0]
-                out = out.float().to("cpu", non_blocking=True)
+                # out = out.float().to("cpu", non_blocking=True)
+                # out = out.to("cpu", non_blocking=True).float()
+                out = out.to("cpu", non_blocking=False).float()
 
                 acts = getattr(residual_stream, acts_type)
                 while len(acts) < layer_num + 1:
